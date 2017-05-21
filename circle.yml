@@ -1,6 +1,6 @@
 machine:
   node:
-    version: 6.5.0
+    version: 6.1.0
   python:
     version: 3.5.1
   services:
@@ -15,14 +15,14 @@ dependencies:
      - pip install -r requirements.txt
      - npm install
      - ./node_modules/webpack/bin/webpack.js
-#     - ./node_modules/selenium-standalone/bin/selenium-standalone install
+     - ./node_modules/selenium-standalone/bin/selenium-standalone install
 
 test:
   pre:
     - flask threaded:
        background: true
-#    - ./node_modules/selenium-standalone/bin/selenium-standalone start
-#        background true
+    - ./node_modules/selenium-standalone/bin/selenium-standalone start:
+       background: true
 
   override:
     - py.test
