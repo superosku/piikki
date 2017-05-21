@@ -19,8 +19,8 @@ dependencies:
 
 test:
   pre:
-    - flask threaded
-        background true
+    - flask threaded:
+       background: true
 #    - ./node_modules/selenium-standalone/bin/selenium-standalone start
 #        background true
 
