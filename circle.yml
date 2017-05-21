@@ -18,9 +18,9 @@ dependencies:
 test:
   pre:
     - flask threaded
-        background: true
+        background true
     - ./node_modules/selenium-standalone/bin/selenium-standalone start
-        background: true
+        background true
 
   override:
     - py.test
