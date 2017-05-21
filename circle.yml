@@ -26,4 +26,4 @@ test:
 
   override:
     - py.test
-    - nightwatch
+    - ./node_modules/nightwatch/bin/nightwatch
