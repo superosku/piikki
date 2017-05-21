@@ -1,3 +1,5 @@
+import os
+
 import jwt
 import pytest
 from flask import current_app
@@ -9,7 +11,10 @@ from backend import create_app, db
 @pytest.fixture
 def app():
     app = create_app(
-        database_uri='postgresql://localhost:5432/piikki_test'
+        database_uri=os.environ.get(
+            'TEST_DATABASE_URL',
+            'postgresql://localhost:5432/piikki_test'
+        )
     )
     app.debug = True
 
