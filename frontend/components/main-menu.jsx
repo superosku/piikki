@@ -69,7 +69,7 @@ class MainMenu extends React.Component {
             </Link>
           </li>
           <li>
-            <a onClick={this.props.logout}>
+            <a className="logout-link" onClick={this.props.logout}>
               <i className="fa fa-sign-out"/>
               <span>Logout</span>
             </a>

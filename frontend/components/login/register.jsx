@@ -12,12 +12,13 @@ class Register extends React.Component {
       <div className="login-vertical-center">
         <div className="login-container">
           <h2>Register</h2>
-          <form className="basic-form" onSubmit={this.props.register}>
+          <form className="basic-form register-form" onSubmit={this.props.register}>
             <label>Email</label>
             <div className="input-container">
               <i className="fa fa-at" />
               <input
                 required
+                id="email"
                 type="email"
                 value={this.props.email}
                 onChange={this.props.setEmail}
@@ -28,6 +29,7 @@ class Register extends React.Component {
               <i className="fa fa-unlock-alt" />
               <input
                 required
+                id="password"
                 type="password"
                 minLength="6"
                 value={this.props.password}
@@ -39,6 +41,7 @@ class Register extends React.Component {
               <i className="fa fa-user" />
               <input
                 required
+                id="first-name"
                 type="text"
                 minLength="2"
                 value={this.props.firstName}
@@ -50,6 +53,7 @@ class Register extends React.Component {
               <i className="fa fa-user" />
               <input
                 required
+                id="last-name"
                 type="text"
                 minLength="2"
                 value={this.props.lastName}

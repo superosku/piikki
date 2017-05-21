@@ -15,7 +15,7 @@ class TabTypeItem extends React.Component {
   }
 
   render() {
-    return <tr>
+    return <tr className="tab-type-item">
       <td>{this.props.tabType.name}</td>
       <td>{this.props.tabType.price}€</td>
       <td>
@@ -46,7 +46,7 @@ class TabTypeSettings extends React.Component {
   }
 
   render() {
-    return <div>
+    return <div className="tab-type-settings">
       <p>Here you can create new tab types or delete old ones.</p>
       <h3>Current tap types</h3>
       <table>
@@ -77,6 +77,7 @@ class TabTypeSettings extends React.Component {
           <i className="fa fa-beer" />
           <input
             required
+            id="name"
             minLength="1"
             maxLength="20"
             type="text"
@@ -89,7 +90,9 @@ class TabTypeSettings extends React.Component {
           <i className="fa fa-euro" />
           <input
             required
+            id="price"
             type="number"
+            step="0.01"
             max="999"
             min="-999"
             value={this.state.price}

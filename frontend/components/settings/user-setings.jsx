@@ -17,6 +17,7 @@ class UserInviteForm extends React.Component {
           <i className="fa fa-user" />
           <input
             required
+            id="email"
             type="email"
             value={this.props.formData.email}
             onChange={((event) => {this.props.updateFormData('email', event.target.value)})}
@@ -81,7 +82,7 @@ class UserSettingsContainer extends React.Component {
   }
 
   render() {
-    return <div>
+    return <div className="user-settings">
       <p>
         Here you can invite new users
       </p>

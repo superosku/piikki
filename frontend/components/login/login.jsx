@@ -25,6 +25,7 @@ class Login extends React.Component {
                 required
                 placeholder="Email"
                 type="text"
+                id="email"
                 value={this.state.email}
                 onChange={(event) => {this.setState({email: event.target.value})}}
               />
@@ -36,6 +37,7 @@ class Login extends React.Component {
                 required
                 placeholder="Password"
                 type="password"
+                id="password"
                 value={this.state.password}
                 onChange={(event) => {this.setState({password: event.target.value})}}
               />
@@ -46,7 +48,7 @@ class Login extends React.Component {
                   <Spinner /> :
                   (
                     <div>
-                      <button type="submit">Login</button>
+                      <button type="submit" className="login-button">Login</button>
                       <Link to="/register">register</Link>
                     </div>
                   )

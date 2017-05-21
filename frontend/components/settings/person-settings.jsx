@@ -22,7 +22,7 @@ class PersonItem extends React.Component {
         {
           this.state.deleting ?
           <Spinner /> :
-          <a
+          <a className={this.props.person.disabled ? 'enable-person' : 'disable-person'}
             onClick={(event) => {
             this.props.disablePerson(
               event,
@@ -58,7 +58,7 @@ class PersonSettings extends React.Component {
   }
 
   render() {
-    return <div>
+    return <div className="person-settings">
       <p>
         Here you can edit your teams persons.
       </p>
@@ -133,6 +133,7 @@ class PersonSettings extends React.Component {
           <i className="fa fa-user" />
           <input
             required
+            id="name"
             minLength="2"
             type="text"
             value={this.state.name}

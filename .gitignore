@@ -3,5 +3,6 @@ frontend/build
 __pycache__
 .env
 .build
+build
 nightwatch-reports/
 

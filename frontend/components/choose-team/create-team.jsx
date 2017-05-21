@@ -11,7 +11,7 @@ import Spinner from './../misc/spinner.jsx';
 
 class CreateTeam extends React.Component {
   render() {
-    return <div className="container padded-container">
+    return <div className="container padded-container create-team">
       <h2>Create team</h2>
       <form className="basic-form" onSubmit={this.props.submit}>
         <label>Name</label>
@@ -21,6 +21,7 @@ class CreateTeam extends React.Component {
             required
             minLength="2"
             maxLength="15"
+            id="team-name"
             type="text"
             value={this.props.name}
             onChange={this.props.setName}
