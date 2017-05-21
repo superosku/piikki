@@ -21,8 +21,12 @@ test:
   pre:
     - flask threaded:
        background: true
-    - ./node_modules/selenium-standalone/bin/selenium-standalone start:
+#    - ./node_modules/selenium-standalone/bin/selenium-standalone start:
+#       background: true
+    - wget https://selenium-release.storage.googleapis.com/2.44/selenium-server-standalone-2.44.0.jar
+    - java -jar selenium-server-standalone-2.44.0.jar:
        background: true
+
 
   override:
     - py.test
