@@ -3,6 +3,10 @@
 
 TODO: Write this
 
+This is a tool for managing tab's
+
+You can try it out at: https://piikki-staging.herokuapp.com/
+
 # How to run locally
 
 ## Install everything
