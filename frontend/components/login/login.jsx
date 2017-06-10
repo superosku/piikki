@@ -78,11 +78,15 @@ class Login extends React.Component {
       });
       localStorage.setItem('access_token', response.data.access_token);
       hashHistory.push('/choose');
-    }).catch((error) => {
+    }).catch(error => {
       this.setState({
         loading: false
       });
-      if (error.response.status === 401 && error.response.data.description == 'Invalid credentials') {
+      if (
+        error.response &&
+        error.response.status === 401 &&
+        error.response.data.description == 'Invalid credentials'
+      ) {
         showPopup({
           'header': "Invalid credentials",
           'info': 'Your credentials did not match or you have not registered yet.',
