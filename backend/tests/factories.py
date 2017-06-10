@@ -46,6 +46,8 @@ class TeamMembershipFactory(SQLAlchemyModelFactory):
     class Meta:
         model = TeamMembership
 
+    is_admin = False
+
 
 class TabTypeFactory(SQLAlchemyModelFactory):
     class Meta:

@@ -4,7 +4,7 @@ from flask_jwt import jwt_required
 from voluptuous import Schema, Required, All, Length
 
 from backend.models import Person, TabItem, db
-from backend.views.base import team_view
+from backend.views.base import team_view, team_admin_required
 from backend.views.api import api
 
 
@@ -56,6 +56,7 @@ def persons(team):
 @api.route('/teams/<team_slug>/persons/<person_id>', methods=['PUT'])
 @jwt_required()
 @team_view
+@team_admin_required
 def modify_person(team, person_id):
     person = Person.query.filter_by(
         id=person_id,
@@ -70,6 +71,7 @@ def modify_person(team, person_id):
 @api.route('/teams/<team_slug>/persons', methods=['POST'])
 @jwt_required()
 @team_view
+@team_admin_required
 def create_person(team):
     data = person_schema(request.json)
 

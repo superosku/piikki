@@ -19,7 +19,8 @@ def _get_teams_response():
             {
                 'id': team_membership.team.id,
                 'name': team_membership.team.name,
-                'slug': team_membership.team.slug
+                'slug': team_membership.team.slug,
+                'is_admin': team_membership.is_admin,
             }
             for team_membership in team_memberships
             ]

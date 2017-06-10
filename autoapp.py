@@ -43,8 +43,8 @@ def initdb():
     db.session.add(team2)
 
     # Team Memberships
-    TeamMembership(user=user, team=team1)
-    TeamMembership(user=user, team=team2)
+    TeamMembership(user=user, team=team1, is_admin=True)
+    TeamMembership(user=user, team=team2, is_admin=True)
 
     # Persons
     persons = [

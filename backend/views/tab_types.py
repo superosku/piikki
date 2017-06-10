@@ -4,7 +4,7 @@ from voluptuous import All, Coerce, Length, Required, Schema, Range
 
 from backend.models import TabType, db
 from backend.views.api import api
-from backend.views.base import team_view
+from backend.views.base import team_view, team_admin_required
 
 
 def _tab_types_response(team):
@@ -42,6 +42,7 @@ def tab_types(team):
 @api.route('/teams/<team_slug>/tab-types', methods=['POST'])
 @jwt_required()
 @team_view
+@team_admin_required
 def create_tab_type(team):
     data = tab_type_schema(request.json)
 
@@ -58,6 +59,7 @@ def create_tab_type(team):
 @api.route('/teams/<team_slug>/tab-types/<tab_type_id>', methods=['DELETE'])
 @jwt_required()
 @team_view
+@team_admin_required
 def delete_tab_type(team, tab_type_id):
     tab_type = TabType.query.filter_by(
         id=tab_type_id,

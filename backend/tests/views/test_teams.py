@@ -22,18 +22,34 @@ class TestTeamViewAuthorized:
         return UserFactory()
 
     def test_returns_correct_data(self, client, logged_in_user):
-        team = TeamFactory()
+        team1 = TeamFactory()
         TeamMembershipFactory(
-            team=team,
-            user=logged_in_user
+            team=team1,
+            user=logged_in_user,
+            is_admin=True
+        )
+        team2 = TeamFactory()
+        TeamMembershipFactory(
+            team=team2,
+            user=logged_in_user,
+            is_admin=False
         )
         response = client.get(url_for('api.teams'))
         assert response.status_code == 200
-        assert response.json == [{
-            'slug': team.slug,
-            'name': 'Beer drinkers',
-            'id': team.id
-        }]
+        assert response.json == [
+            {
+                'slug': team1.slug,
+                'name': 'Beer drinkers',
+                'id': team1.id,
+                'is_admin': True
+            },
+            {
+                'slug': team2.slug,
+                'name': 'Beer drinkers',
+                'id': team2.id,
+                'is_admin': False
+            }
+        ]
 
     def test_doesnt_return_teams_user_is_not_part_of(self, client):
         TeamFactory()

@@ -86,7 +86,7 @@ class TestUsersInviteAuthorized:
     def data(self):
         return {
             'email': 'new@user.fi',
-            'is_admin': True
+            'is_admin': False
         }
 
     def test_returns_404_for_team_not_part_of(self, client, logged_in_user):
@@ -103,7 +103,7 @@ class TestUsersInviteAuthorized:
 
     def test_returns_correct_data(self, client, logged_in_user, data):
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         response = client.post(
             url_for('api.users_invite', team_slug='mine'),
             data=json.dumps(data),
@@ -111,15 +111,15 @@ class TestUsersInviteAuthorized:
         )
         assert response.status_code == 201
         assert response.json == [
-            {'is_admin': False, 'email': 'owner@email.fi', 'id': 1},
-            {'is_admin': True, 'email': 'new@user.fi', 'id': 2}
+            {'is_admin': True, 'email': 'owner@email.fi', 'id': 1},
+            {'is_admin': False, 'email': 'new@user.fi', 'id': 2}
         ]
 
     def test_creates_invite_type_user_when_no_user_exists(
         self, client, logged_in_user, data
     ):
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         response = client.post(
             url_for('api.users_invite', team_slug='mine'),
             data=json.dumps(data),
@@ -131,14 +131,14 @@ class TestUsersInviteAuthorized:
         assert created_user.first_name == ''
         assert created_user.last_name == ''
         membership = TeamMembership.query.filter_by(user=created_user).one()
-        assert membership.is_admin is True
+        assert membership.is_admin is False
 
     def test_invites_existing_user(
         self, client, logged_in_user, data
     ):
-        data['is_admin'] = False
+        data['is_admin'] = True
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         UserFactory(email='new@user.fi')
         response = client.post(
             url_for('api.users_invite', team_slug='mine'),
@@ -151,14 +151,14 @@ class TestUsersInviteAuthorized:
         assert user.first_name == 'Pekka'
         assert user.last_name == 'Puupää'
         membership = TeamMembership.query.filter_by(user=user).one()
-        assert membership.is_admin is False
+        assert membership.is_admin is True
 
     def test_returns_400_when_inviting_already_invited_user(
         self, client, logged_in_user, data
     ):
         data['is_admin'] = False
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         other_user = UserFactory(email='new@user.fi')
         TeamMembershipFactory(team=team, user=other_user)
         response = client.post(

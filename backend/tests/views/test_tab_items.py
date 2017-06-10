@@ -194,16 +194,16 @@ class TestTabItemsPostUnauthorized:
 
 
 @pytest.mark.usefixtures('request_ctx', 'database')
-class TestTabItemsPostAuthorized:
+class TabItemsPostAuthorizedTestCase:
     @pytest.fixture
     def team(self):
         return TeamFactory(slug='my-team')
 
     @pytest.fixture
     def logged_in_user(self, team):
-        user = UserFactory()
-        TeamMembershipFactory(user=user, team=team)
-        return user
+        return UserFactory(memberships=[
+            TeamMembershipFactory.build(team=team, is_admin=True)
+        ])
 
     @pytest.fixture
     def person(self, team):
@@ -222,6 +222,9 @@ class TestTabItemsPostAuthorized:
             'person_id': person.id
         }
 
+
+@pytest.mark.usefixtures('request_ctx', 'database')
+class TestTabItemsPostAdmin(TabItemsPostAuthorizedTestCase):
     def test_returns_404_for_team_not_part_of(self, client, logged_in_user):
         team = TeamFactory(slug='not-mine')
         TabTypeFactory(team=team)
@@ -319,3 +322,36 @@ class TestTabItemsPostAuthorized:
         assert tab_item.total == 3
         assert tab_item.adder == logged_in_user
         assert tab_item.person == person
+
+
+@pytest.mark.usefixtures('request_ctx', 'database')
+class TestTabItemsPostNonAdmin(TabItemsPostAuthorizedTestCase):
+    @pytest.fixture
+    def logged_in_user(self, team):
+        return UserFactory(memberships=[
+            TeamMembershipFactory.build(team=team, is_admin=False)
+        ])
+
+    def test_non_admin_cant_add_negative_tabs(
+        self, client, logged_in_user, person
+    ):
+        data = {
+            'tab_items': [
+                {
+                    'name': 'Paid back',
+                    'price': -5,
+                    'amount': 1
+                }
+            ],
+            'person_id': person.id
+        }
+        response = client.post(
+            url_for('api.tab_items', team_slug='my-team'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        assert response.status_code == 400
+        assert response.json == {
+            'errors': {'tab_items': ['Only admins can add negative tabs.']}
+        }
+        assert TabItem.query.count() == 0

@@ -2,11 +2,11 @@ import datetime
 
 from flask import abort, jsonify, request
 from flask_jwt import current_identity, jwt_required
-from voluptuous import Required, Schema, Coerce
+from voluptuous import Coerce, Required, Schema
 
-from backend.models import Person, TabItem, db
-from backend.views.base import team_view
+from backend.models import Person, TabItem, TeamMembership, db
 from backend.views.api import api
+from backend.views.base import team_view
 from backend.views.persons import _get_person_data
 
 
@@ -96,6 +96,20 @@ def tab_items_add(team):
                 'person_id': ['Person not found for this id.']
             }
         }), 400
+
+    team_member = TeamMembership.query.filter_by(
+        user=current_identity,
+        team=team
+    ).one()
+
+    if not team_member.is_admin:
+        for tab_item_data in data['tab_items']:
+            if tab_item_data['price'] * tab_item_data['amount'] < 0:
+                return jsonify({
+                    'errors': {
+                        'tab_items': ['Only admins can add negative tabs.']
+                    }
+                }), 400
 
     tab_items = []
     for tab_item_data in data['tab_items']:

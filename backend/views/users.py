@@ -1,11 +1,12 @@
 import datetime
+
 from flask import abort, jsonify, request
 from flask_jwt import jwt_required
-from voluptuous import Required, Schema, Email, Boolean
+from voluptuous import Boolean, Email, Required, Schema
 
-from backend.models import TeamMembership, db, User
+from backend.models import TeamMembership, User, db
 from backend.views.api import api
-from backend.views.base import team_view
+from backend.views.base import team_admin_required, team_view
 
 
 def _get_users_response(team):
@@ -40,6 +41,7 @@ user_invite_schema = Schema({
 @api.route('/teams/<team_slug>/users/invite', methods=['POST'])
 @jwt_required()
 @team_view
+@team_admin_required
 def users_invite(team):
     if request.mimetype != 'application/json':
         abort(415)

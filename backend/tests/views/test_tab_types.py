@@ -90,9 +90,11 @@ class TestTabTypesDeleteAuthorized:
         self, client, logged_in_user
     ):
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         other_team = TeamFactory(slug='other')
-        TeamMembershipFactory(team=other_team, user=logged_in_user)
+        TeamMembershipFactory(
+            team=other_team, user=logged_in_user, is_admin=True
+        )
 
         tab_type = TabTypeFactory(team=team)
         response = client.delete(url_for(
@@ -106,7 +108,7 @@ class TestTabTypesDeleteAuthorized:
             self, client, logged_in_user
     ):
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
 
         response = client.delete(url_for(
             'api.delete_tab_type',
@@ -115,11 +117,11 @@ class TestTabTypesDeleteAuthorized:
         ))
         assert response.status_code == 404
 
-    def test_returns_deletes_tab_type_when_succesfull(
+    def test_returns_200_and_deletes_tab_type_when_succesfull(
             self, client, logged_in_user
     ):
         team = TeamFactory(slug='mine')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         tab_type = TabTypeFactory(team=team)
 
         response = client.delete(url_for(
@@ -129,6 +131,21 @@ class TestTabTypesDeleteAuthorized:
         ))
         assert response.status_code == 200
         assert TabType.query.count() == 0
+
+    def test_returns_403_and_doesnt_delete_tab_type_when_not_admin(
+            self, client, logged_in_user
+    ):
+        team = TeamFactory(slug='mine')
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=False)
+        tab_type = TabTypeFactory(team=team)
+
+        response = client.delete(url_for(
+            'api.delete_tab_type',
+            team_slug='mine',
+            tab_type_id=tab_type.id
+        ))
+        assert response.status_code == 403
+        assert TabType.query.count() == 1
 
 
 @pytest.mark.usefixtures('request_ctx', 'database')
@@ -162,11 +179,11 @@ class TestTabTypesCreateAuthorized:
         )
         assert response.status_code == 404
 
-    def test_creates_tab_type_when_succesfull(
+    def test_returns_200_and_creates_tab_type_when_succesfull(
         self, client, data, logged_in_user
     ):
         team = TeamFactory(slug='bread-eaters')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         response = client.post(
             url_for('api.create_tab_type', team_slug='bread-eaters'),
             data=json.dumps(data),
@@ -183,7 +200,7 @@ class TestTabTypesCreateAuthorized:
     ):
         data['price'] = '1.111111'
         team = TeamFactory(slug='bread-eaters')
-        TeamMembershipFactory(team=team, user=logged_in_user)
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         response = client.post(
             url_for('api.create_tab_type', team_slug='bread-eaters'),
             data=json.dumps(data),
@@ -194,3 +211,16 @@ class TestTabTypesCreateAuthorized:
         assert tab_type.team == team
         assert tab_type.price == Decimal('1.11')
         assert tab_type.name == 'Big bread'
+
+    def test_returns_403_and_doesnt_create_tab_type_when_not_admin(
+            self, client, data, logged_in_user
+    ):
+        team = TeamFactory(slug='bread-eaters')
+        TeamMembershipFactory(team=team, user=logged_in_user, is_admin=False)
+        response = client.post(
+            url_for('api.create_tab_type', team_slug='bread-eaters'),
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+        assert response.status_code == 403
+        assert TabType.query.count() == 0
