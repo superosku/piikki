@@ -59,7 +59,7 @@ const teamReducer = function(state = initialTeams, action) {
     return {
       teams: action.data,
       loaded: true,
-      currentTeam: undefined
+      currentTeam: state.currentTeam
     };
   }
   if (action.type === 'SET_CURRENT_TEAM') {

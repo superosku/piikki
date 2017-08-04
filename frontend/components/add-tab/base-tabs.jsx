@@ -1,11 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from './../../store.js';
-import MainLayoutContainer from './../main-layout.jsx'
-import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
 import { authGet } from '../../api.js'
-import PersonListing from './person-listing.jsx'
-import Spinner from './../misc/spinner.jsx'
 
 
 class BaseTabs extends React.Component {

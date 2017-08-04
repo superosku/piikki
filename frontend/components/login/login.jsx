@@ -77,7 +77,7 @@ class Login extends React.Component {
         data: response.data.access_token
       });
       localStorage.setItem('access_token', response.data.access_token);
-      hashHistory.push('/choose');
+      hashHistory.push('/after-login');
     }).catch(error => {
       this.setState({
         loading: false

@@ -23,7 +23,8 @@ class UnderTeam extends React.Component {
     return (
       this.props.teamState.loaded &&
       this.props.tabTypeState.loaded &&
-      this.props.personState.loaded
+      this.props.personState.loaded &&
+      this.props.teamState.currentTeam
     )
   }
 
