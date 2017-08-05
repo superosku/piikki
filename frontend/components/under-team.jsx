@@ -5,6 +5,7 @@ import axios from 'axios';
 import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
 import { authGet } from './../api.js'
 import Spinner from './misc/spinner.jsx';
+import { showError, showPopup } from "../popups";
 
 function logout() {
   localStorage.setItem('access_token', undefined);
@@ -73,6 +74,17 @@ class UnderTeamContainer extends React.Component {
         type: 'SET_TAB_TYPES',
         data: response.data
       })
+    }).catch(error => {
+      if (error.response && error.response.status == 404) {
+        showPopup({
+          'header': 'Unknown url',
+          'info': 'The url you tried to access does not exist',
+          'class': 'warning'
+        });
+        hashHistory.push('/after-login');
+      } else {
+        showError();
+      }
     });
 
     const personsUrl = `/teams/${slug}/persons`;
