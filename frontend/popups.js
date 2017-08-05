@@ -21,7 +21,7 @@ function showPopup(popup, duration=3000) {
 function showError() {
   showPopup({
     'header': "Error",
-    'info': 'Error happened. Try if reloading the page helps.',
+    'info': 'Unknown error happened.',
     'class': 'error'
   }, 0);
 }
