@@ -58,7 +58,8 @@ module.exports = {
   plugins: [
     new ExtractTextPlugin('[name].css'),
     new webpack.DefinePlugin({
-      API_URL: JSON.stringify(process.env.API_URL || '')
+      API_URL: JSON.stringify(process.env.API_URL || ''),
+      RAVEN_CONFIG: JSON.stringify(process.env.RAVEN_CONFIG || '')
     })
   ]
 };
