@@ -1,19 +1,12 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from './../store.js';
-import axios from 'axios';
-import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 import { authGet } from './../api.js'
 import Spinner from './misc/spinner.jsx';
-import MainMenu from './main-menu.jsx'
+import MainMenu from './main-menu.jsx';
+import { logout } from './../services.js';
 
-function logout() {
-  localStorage.setItem('access_token', undefined);
-  store.dispatch({
-    type: 'AUTH_LOGOUT'
-  });
-  hashHistory.push('/login');
-}
 
 class MainLayout extends React.Component {
   render() {
@@ -41,7 +34,7 @@ class MainLayout extends React.Component {
 
 class MainLayoutContainer extends React.Component {
   componentDidMount() {
-    if (!this.props.authenticated) {
+    if (!this.props.access_token) {
       hashHistory.push('/login');
       return
     }

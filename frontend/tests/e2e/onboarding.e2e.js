@@ -115,12 +115,7 @@ module.exports = {
       .setValue('#email', email)
       .setValue('#password', 'secret')
       .click('.bottom-part button')
-    // Team listing
-      .waitForElementVisible('.choose-team', 1000)
-      .assert.urlEquals(`${baseUrl}/#/choose`)
-      .assert.containsText('.choose-team', 'Toms club')
     // Tabs
-      .click('.choose-team a')
       .waitForElementVisible('.person-listing', 1000)
       .assert.containsText('.person-listing', 'Tom Tester')
       .assert.containsText('.person-listing', 'Dug Destroyer')

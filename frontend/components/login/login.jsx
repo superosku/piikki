@@ -98,6 +98,12 @@ class Login extends React.Component {
     });
   }
 
+  componentWillMount() {
+    if (this.props.authState.access_token) {
+      hashHistory.push('/after-login');
+    }
+  }
+
   constructor(props) {
     super(props);
     this.state = {
@@ -108,4 +114,9 @@ class Login extends React.Component {
   }
 }
 
-export default Login
+
+export default connect(function(store) {
+  return {
+    authState: store.authState
+  }
+})(Login);

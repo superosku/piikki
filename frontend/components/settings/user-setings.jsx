@@ -117,7 +117,6 @@ class UserSettingsContainer extends React.Component {
   componentDidMount() {
     const url = `/teams/${this.props.teamSlug}/users`;
     authGet(url).then(response => {
-      console.debug('settings users to', response.data);
       this.setState({
         users: response.data,
         loading: false

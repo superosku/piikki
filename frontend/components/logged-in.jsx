@@ -1,26 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from './../store.js';
-import axios from 'axios';
-import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
 import { authGet } from './../api.js'
 import Spinner from './misc/spinner.jsx';
 import MainMenu from './main-menu.jsx'
-import { showPopup } from '../popups';
+import { logout } from '../services';
 
-function logout() {
-  console.log('logout pressed');
-  localStorage.setItem('access_token', undefined);
-  store.dispatch({
-    type: 'AUTH_LOGOoT'
-  });
-  hashHistory.push('/login');
-  showPopup({
-    header: 'Logged out',
-    info: 'Succesful logout.',
-    class: 'success'
-  });
-}
 
 class LoggedIn extends React.Component {
   render() {
@@ -54,10 +39,6 @@ class LoggedIn extends React.Component {
 
 class LoggedInContainer extends React.Component {
   componentDidMount() {
-    if (!this.props.authenticated) {
-      hashHistory.push('/login');
-      return
-    }
     authGet('/teams').then(response => {
       store.dispatch({
         type: 'SET_TEAMS',

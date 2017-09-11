@@ -10,8 +10,6 @@ class BaseTabs extends React.Component {
   }
 
   componentDidMount() {
-    console.debug('base tabs did mount');
-
     // TODO: this is copypasted, make sure to refactor it somewhere.
     const personsUrl = `/teams/${this.props.slug}/persons`;
     authGet(personsUrl).then(response => {

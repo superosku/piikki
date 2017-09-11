@@ -149,7 +149,17 @@ class RegisterContainer extends React.Component {
       }
     });
   }
+
+  componentWillMount() {
+    if (this.props.authState.access_token) {
+      hashHistory.push('/after-login');
+    }
+  }
 }
 
 
-export default RegisterContainer;
+export default connect(function(store) {
+  return {
+    authState: store.authState
+  }
+})(RegisterContainer);

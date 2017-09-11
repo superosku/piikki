@@ -123,21 +123,18 @@ const tabTypeReducer = function(state = initialTapTypes, action) {
 // Auth
 
 const initialAuth = {
-  access_token: localStorage.getItem('access_token') | undefined,
-  authenticated: localStorage.getItem('access_token') ? true : false
+  access_token: localStorage.getItem('access_token') || undefined
 };
 
 const authReducer = function(state = initialAuth, action) {
   if (action.type === 'AUTH_SUCCESS') {
     return {
-      access_token: action.data,
-      authenticated: true
+      access_token: action.data
     }
   }
   if (action.type === 'AUTH_LOGOUT') {
     return {
-      access_token: undefined,
-      authenticated: false
+      access_token: undefined
     }
   }
   return state

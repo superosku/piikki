@@ -1,19 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import store from './../store.js';
-import axios from 'axios';
-import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
+import { hashHistory, Link } from 'react-router';
 import { authGet } from './../api.js'
 import Spinner from './misc/spinner.jsx';
 import { showError, showPopup } from "../popups";
-
-function logout() {
-  localStorage.setItem('access_token', undefined);
-  store.dispatch({
-    type: 'AUTH_LOGOUT'
-  });
-  hashHistory.push('/login');
-}
 
 class UnderTeam extends React.Component {
   render() {

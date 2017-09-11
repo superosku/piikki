@@ -88,13 +88,11 @@ class ChangePasswordFormContainer extends React.Component {
   
   changePassword(event) {
     event.preventDefault();
-    console.debug('changepassword called');
     this.setState({submitting: true});
     const data = {
       current_password: this.state.formData.oldPassword,
       new_password: this.state.formData.newPassword
     };
-    console.debug('POSTING', data);
     authPost('/change-password', data).then((response) => {
       showPopup({
         'header': "Password changed",

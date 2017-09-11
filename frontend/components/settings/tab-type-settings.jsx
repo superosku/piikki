@@ -125,7 +125,6 @@ class TabTypeSettingsContainer extends React.Component {
 
   deleteTabType(event, tabTypeId) {
     event.preventDefault();
-    console.debug('JEE', tabTypeId);
     const url = `/teams/${this.props.currentTeam.slug}/tab-types/${tabTypeId}`;
     authDelete(url).then((response) => {
       store.dispatch({
@@ -144,7 +143,6 @@ class TabTypeSettingsContainer extends React.Component {
 
   createTabType(event, data) {
     event.preventDefault();
-    console.debug('jee', data);
     const url = `/teams/${this.props.currentTeam.slug}/tab-types`;
     data.price = parseFloat(data.price);
     this.setState({submitting: true});
