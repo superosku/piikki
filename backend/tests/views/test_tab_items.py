@@ -63,7 +63,8 @@ class TestTabItemsViewAuthorized:
                     'name': 'Beer',
                     'added_at': tab_item.added_at.isoformat(),
                     'id': 1,
-                    'amount': 1
+                    'amount': 1,
+                    'can_be_deleted': True
                 }
             ]
         }
@@ -104,7 +105,8 @@ class TestTabItemsViewAuthorized:
                     'name': 'Beer',
                     'added_at': tab_item.added_at.isoformat(),
                     'id': 1,
-                    'amount': 1
+                    'amount': 1,
+                    'can_be_deleted': True
                 }
             ]
         }
@@ -166,7 +168,8 @@ class TestTabItemsViewAuthorized:
                     'name': 'Oldest',
                     'added_at': tab_item.added_at.isoformat(),
                     'id': tab_item.id,
-                    'amount': 1
+                    'amount': 1,
+                    'can_be_deleted': False
                 }
             ]
         }
@@ -215,7 +218,8 @@ class TestTabItemsViewAuthorized:
                     'name': 'Oldest',
                     'added_at': tab_item.added_at.isoformat(),
                     'id': tab_item.id,
-                    'amount': 1
+                    'amount': 1,
+                    'can_be_deleted': False
                 }
             ]
         }
@@ -264,7 +268,8 @@ class TestTabItemsViewAuthorized:
                     'name': 'Beer',
                     'added_at': tab_item.added_at.isoformat(),
                     'id': tab_item.id,
-                    'amount': 1
+                    'amount': 1,
+                    'can_be_deleted': False
                 }
             ]
         }

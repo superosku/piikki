@@ -1,3 +1,5 @@
+import datetime
+
 from flask_sqlalchemy import SQLAlchemy
 from passlib.hash import pbkdf2_sha256
 from sqlalchemy import ForeignKey
@@ -126,6 +128,13 @@ class TabItem(db.Model):
 
     price = db.Column(db.Numeric(precision=10, scale=2), nullable=False)
     amount = db.Column(db.Integer, nullable=False)
+
+    @property
+    def can_be_deleted(self):
+        return (
+            self.added_at + datetime.timedelta(hours=1) >
+            datetime.datetime.now()
+        )
 
     @property
     def total(self):

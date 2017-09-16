@@ -39,7 +39,7 @@ class TabItem extends React.Component {
           <span className="info">{this.price}</span>
         </div>
         <div className="info-container delete">
-          {this.canDelete && <button onClick={this.props.onDelete}>
+          {this.props.tabItem.can_be_deleted && <button onClick={this.props.onDelete}>
             Delete
             <i className="fa fa-trash"></i>
           </button>}
@@ -69,11 +69,6 @@ class TabItem extends React.Component {
     return <span className="price-info">
       {this.props.tabItem.price}€ x {this.props.tabItem.amount} = <span className="final-price">{this.props.tabItem.total}€</span>
     </span>;
-  }
-
-  get canDelete() {
-    const secondsDiff = moment().unix() - moment(this.props.tabItem.added_at).unix();
-    return secondsDiff < 60 * 60;
   }
 }
 

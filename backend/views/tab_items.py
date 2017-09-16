@@ -4,7 +4,7 @@ from flask import abort, jsonify, request
 from flask_jwt import current_identity, jwt_required
 from voluptuous import Coerce, Required, Schema
 
-from backend.models import Person, TabItem, TeamMembership, db, TabType
+from backend.models import Person, TabItem, TeamMembership, db
 from backend.views.api import api
 from backend.views.base import team_view
 from backend.views.persons import _get_person_data
@@ -25,7 +25,8 @@ def _repr_tab_item(tab_item):
             'id': tab_item.adder.id,
             'name': tab_item.adder.name,
         },
-        'added_at': tab_item.added_at.isoformat()
+        'added_at': tab_item.added_at.isoformat(),
+        'can_be_deleted': tab_item.can_be_deleted
     }
 
 
@@ -162,10 +163,7 @@ def tab_items_add(team):
 def tab_items_delete(team, tab_item_id):
     tab_item = TabItem.query.get(tab_item_id)
 
-    if (
-        tab_item.added_at + datetime.timedelta(hours=1) <
-        datetime.datetime.now()
-    ):
+    if not tab_item.can_be_deleted:
         return jsonify({
             'errors': {
                 'error': ['Items older than 1 hour cant be deleted.']
