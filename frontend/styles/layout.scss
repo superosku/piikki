@@ -332,43 +332,61 @@ body, html {
 .log-container {
   .tab-item {
     background-color: $lighterBackground;
-    padding: 15px 10px;
-    margin: 20px 10px;
+    padding: 10px 10px;
+    margin: 20px 0px;
+
+    box-shadow: 0 0 15px rgba($darkBackground, 0.2);
 
     .tab-item-header {
       display: flex;
       justify-content: space-between;
 
-      font-size: 18px;
+      font-size: 16px;
 
-      padding-bottom: 10px;
-      margin-bottom: 15px;
-      border-bottom: 1px solid $lightBlue;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      border-bottom: 1px solid $darkBackground;
 
       padding-left: 5px;
       padding-right: 5px;
 
       font-weight: bold;
-      color: $lightBlue;
-
+      .blue-thing {
+        color: $lightBlue;
+      }
       i {
         padding: 0 5px 0 10px;
       }
     }
 
+    .price-info {
+      color: #9e9e9e;
+      .final-price {
+        color: $darkBackground;
+      }
+    }
+
     .tab-item-content {
-      padding-left: 5px;
-      padding-right: 5px;
+      display: flex;
+      @media screen and (max-width: $mobileWidth) {
+        flex-direction: column;
+        .info-container {
+          padding-top: 5px;
+        }
+        i {
+          width: 20px;
+        }
+      }
+      i {
+        color: $lightBlue
+      }
       .info {
         font-weight: bold;
-      }
-      .name {
-        display: block;
-        float: left;
-        width: 80px;
+        padding-left: 10px;
       }
       .info-container {
-        padding: 3px 0;
+        padding-right: 20px;
+        padding-left: 5px;
       }
     }
   }

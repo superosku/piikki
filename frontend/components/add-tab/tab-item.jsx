@@ -7,26 +7,32 @@ class TabItem extends React.Component {
     return <div className="tab-item">
       <div className="tab-item-header">
         <div>
-          <span className="type-name">
+          <span className="blue-thing type-name">
             {this.props.tabItem.name}
           </span>
         </div>
         <div>
-          {this.addedAt}
+          <span className="blue-thing">{this.addedAt}</span>
         </div>
       </div>
       <div className="tab-item-content">
         <div className="info-container">
-          <span className="name">Price</span>
-          <span className="info"> {this.props.tabItem.price}€ x {this.props.tabItem.amount} = {this.props.tabItem.total}€</span>
-        </div>
-        <div className="info-container">
-          <span className="name">By</span>
+          <span className="name">
+            <i className="fa fa-address-book"></i>
+          </span>
           <span className="info">{this.props.tabItem.adder.name}</span>
         </div>
         <div className="info-container">
-          <span className="name">For</span>
+          <span className="name">
+            <i className="fa fa-address-book-o"></i>
+          </span>
           <span className="info">{this.props.tabItem.person.name}</span>
+        </div>
+        <div className="info-container">
+          <span className="name">
+            <i className="fa fa-eur"></i>
+          </span>
+          <span className="info">{this.price}</span>
         </div>
       </div>
     </div>
@@ -40,6 +46,19 @@ class TabItem extends React.Component {
       {moment(this.props.tabItem.added_at).format('HH:mm')}
     </span>
     return moment(this.props.tabItem.added_at).format('DD.MM.YY - HH:mm');
+  }
+
+  get price() {
+    if (this.props.tabItem.amount === 1) {
+      return <span className="price-info">
+        <span className="final-price">
+          {this.props.tabItem.amount}€
+        </span>
+      </span>
+    }
+    return <span className="price-info">
+      {this.props.tabItem.price}€ x {this.props.tabItem.amount} = <span className="final-price">{this.props.tabItem.total}€</span>
+    </span>;
   }
 }
 
