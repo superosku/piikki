@@ -1,11 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import axios from 'axios';
-import { connect, Provider } from 'react-redux';
-import { Router, Route, IndexRoute, hashHistory, Link } from 'react-router';
+import { connect } from 'react-redux';
+import { hashHistory, Link } from 'react-router';
 
 import store from './../../store.js';
-import MainLayoutContainer from './../main-layout.jsx'
 import Spinner from './../misc/spinner.jsx';
 
 import { showPopup, showError } from '../../popups.js';

@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { authDelete, authPost } from './../../api.js';
 import store from './../../store.js';
 import Spinner from './../misc/spinner.jsx';
-import TabItem from './../add-tab/tab-item.jsx';
 
 import { showPopup, showError, showFormValidationError } from '../../popups.js';
 
