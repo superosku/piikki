@@ -15,7 +15,6 @@ class CreateTeam extends React.Component {
       <form className="basic-form" onSubmit={this.props.submit}>
         <label>Name</label>
         <div className="input-container">
-          <i className="fa fa-users" />
           <input
             required
             minLength="2"
@@ -25,6 +24,7 @@ class CreateTeam extends React.Component {
             value={this.props.name}
             onChange={this.props.setName}
           />
+          <i className="fa fa-users" />
         </div>
         {
           this.props.loading ? <Spinner /> : <div>

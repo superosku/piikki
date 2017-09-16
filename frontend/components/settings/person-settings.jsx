@@ -130,7 +130,6 @@ class PersonSettings extends React.Component {
       >
         <label>Name</label>
         <div className="input-container">
-          <i className="fa fa-user" />
           <input
             required
             id="name"
@@ -139,6 +138,7 @@ class PersonSettings extends React.Component {
             value={this.state.name}
             onChange={((event) => {this.setState({name: event.target.value})}).bind(this)}
           />
+          <i className="fa fa-user" />
         </div>
         {
           this.props.submitting ? <Spinner /> : <div>

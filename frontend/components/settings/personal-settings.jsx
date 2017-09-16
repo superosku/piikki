@@ -16,17 +16,16 @@ class ChangePasswordForm extends React.Component {
     >
       <label>Current password</label>
       <div className="input-container">
-        <i className="fa fa-lock" />
         <input
           required
           type="password"
           value={this.props.formData.oldPassword}
           onChange={((event) => {this.props.updateFormData('oldPassword', event.target.value)})}
         />
+        <i className="fa fa-lock" />
       </div>
       <label>New password</label>
       <div className="input-container">
-        <i className="fa fa-unlock-alt" />
         <input
           required
           type="password"
@@ -34,10 +33,10 @@ class ChangePasswordForm extends React.Component {
           value={this.props.formData.newPassword}
           onChange={((event) => {this.props.updateFormData('newPassword', event.target.value)})}
         />
+        <i className="fa fa-unlock-alt" />
       </div>
       <label>New password again</label>
       <div className="input-container">
-        <i className="fa fa-unlock-alt" />
         <input
           required
           type="password"
@@ -45,6 +44,7 @@ class ChangePasswordForm extends React.Component {
           value={this.props.formData.newPassword2}
           onChange={((event) => {this.props.updateFormData('newPassword2', event.target.value)})}
         />
+        <i className="fa fa-unlock-alt" />
       </div>
       {
         (this.props.formData.newPassword2 !== '' && (this.props.formData.newPassword !== this.props.formData.newPassword2)) ?

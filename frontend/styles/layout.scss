@@ -162,13 +162,9 @@ body, html {
       justify-content: center;
     }
     .login-container {
-      //box-shadow: 0px 0px 100px rgba($darkText, 0.3);
-      //background-color: $lightBackground;
-      //padding: 20px 20px 30px 20px;
-      //color: $darkText;
-      //color: $lightBackground;
       color: $lighterBackground;
       font-size: 20px;
+      text-transform: uppercase;
       button {
         color: $lighterBackground;
         border-color: $lightBackground;
@@ -177,6 +173,7 @@ body, html {
       h2 {
         margin-top: 0;
         margin-bottom: 10px;
+        font-size: 30px;
       }
       .bottom-part {
         height: 70px;
@@ -184,8 +181,17 @@ body, html {
           padding-top: 18px;
           height: 40px;
         }
-        a {
-          color: $lighterBackground;
+        button {
+          text-transform: uppercase;
+        }
+        .bottom-link-container {
+          display: flex;
+          flex-direction: column;
+          a {
+            color: $lighterBackground;
+            text-align: center;
+            font-size: 16px;
+          }
         }
       }
     }
@@ -707,6 +713,7 @@ form.basic-form {
   max-width: 400px;
   label {
     padding: 10px 10px 5px 0px;
+    font-size: 16px;
   }
   input, label {
     display: block;
@@ -737,7 +744,7 @@ form.basic-form {
     height: 20px;
   }
   input {
-    padding: 5px 5px 5px 0px;
+    padding: 5px 5px 5px 5px;
     margin-right: 5px;
     &:focus {
       outline: none;

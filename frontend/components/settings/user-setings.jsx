@@ -14,7 +14,6 @@ class UserInviteForm extends React.Component {
       <form className="basic-form" onSubmit={this.props.submitForm}>
         <label>Email</label>
         <div className="input-container">
-          <i className="fa fa-user" />
           <input
             required
             id="email"
@@ -22,6 +21,7 @@ class UserInviteForm extends React.Component {
             value={this.props.formData.email}
             onChange={((event) => {this.props.updateFormData('email', event.target.value)})}
           />
+          <i className="fa fa-user" />
         </div>
         <label>Type</label>
         <select onChange={((event) => {this.props.updateFormData('type', event.target.value)})}>

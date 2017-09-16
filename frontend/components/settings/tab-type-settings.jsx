@@ -74,7 +74,6 @@ class TabTypeSettings extends React.Component {
       >
         <label>Name</label>
         <div className="input-container">
-          <i className="fa fa-beer" />
           <input
             required
             id="name"
@@ -84,10 +83,10 @@ class TabTypeSettings extends React.Component {
             value={this.state.name}
             onChange={((event) => {this.setState({name: event.target.value})}).bind(this)}
           />
+          <i className="fa fa-beer" />
         </div>
         <label>Price</label>
         <div className="input-container">
-          <i className="fa fa-euro" />
           <input
             required
             id="price"
@@ -98,6 +97,7 @@ class TabTypeSettings extends React.Component {
             value={this.state.price}
             onChange={((event) => {this.setState({price: event.target.value})}).bind(this)}
           />
+          <i className="fa fa-euro" />
         </div>
         <div>
           {this.props.submitting ? <Spinner /> : <button type="submit">Add</button>}

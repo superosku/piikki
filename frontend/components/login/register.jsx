@@ -15,7 +15,6 @@ class Register extends React.Component {
           <form className="basic-form register-form" onSubmit={this.props.register}>
             <label>Email</label>
             <div className="input-container">
-              <i className="fa fa-at" />
               <input
                 required
                 id="email"
@@ -23,10 +22,10 @@ class Register extends React.Component {
                 value={this.props.email}
                 onChange={this.props.setEmail}
               />
+              <i className="fa fa-at" />
             </div>
             <label>Password</label>
             <div className="input-container">
-              <i className="fa fa-unlock-alt" />
               <input
                 required
                 id="password"
@@ -35,10 +34,10 @@ class Register extends React.Component {
                 value={this.props.password}
                 onChange={this.props.setPassword}
               />
+              <i className="fa fa-unlock-alt" />
             </div>
             <label>First name</label>
             <div className="input-container">
-              <i className="fa fa-user" />
               <input
                 required
                 id="first-name"
@@ -47,10 +46,10 @@ class Register extends React.Component {
                 value={this.props.firstName}
                 onChange={this.props.setFirstName}
               />
+              <i className="fa fa-user" />
             </div>
             <label>Last name</label>
             <div className="input-container">
-              <i className="fa fa-user" />
               <input
                 required
                 id="last-name"
@@ -59,10 +58,13 @@ class Register extends React.Component {
                 value={this.props.lastName}
                 onChange={this.props.setLastName}
               />
+              <i className="fa fa-user" />
             </div>
             <div className="bottom-part">
               <button type="submit">Register</button>
-              <Link to="/login">login</Link>
+              <div className="bottom-link-container">
+                <Link to="/login">login</Link>
+              </div>
             </div>
           </form>
         </div>
