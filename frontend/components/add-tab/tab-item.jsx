@@ -52,7 +52,7 @@ class TabItem extends React.Component {
     if (this.props.tabItem.amount === 1) {
       return <span className="price-info">
         <span className="final-price">
-          {this.props.tabItem.amount}€
+          {this.props.tabItem.price}€
         </span>
       </span>
     }
