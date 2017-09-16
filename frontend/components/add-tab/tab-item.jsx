@@ -1,6 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 
+import { authDelete } from '../../api.js';
+import { connect } from 'react-redux';
+import { showError, showPopup } from '../../popups';
+
 
 class TabItem extends React.Component {
   render() {
@@ -30,9 +34,15 @@ class TabItem extends React.Component {
         </div>
         <div className="info-container">
           <span className="name">
-            <i className="fa fa-eur"></i>
+            <i className="fa fa-money"></i>
           </span>
           <span className="info">{this.price}</span>
+        </div>
+        <div className="info-container delete">
+          {this.canDelete && <button onClick={this.props.onDelete}>
+            Delete
+            <i className="fa fa-trash"></i>
+          </button>}
         </div>
       </div>
     </div>
@@ -60,7 +70,54 @@ class TabItem extends React.Component {
       {this.props.tabItem.price}€ x {this.props.tabItem.amount} = <span className="final-price">{this.props.tabItem.total}€</span>
     </span>;
   }
+
+  get canDelete() {
+    const secondsDiff = moment().unix() - moment(this.props.tabItem.added_at).unix();
+    return secondsDiff < 60 * 60;
+  }
 }
 
 
-export default TabItem;
+class TabItemContainer extends React.Component {
+  render() {
+    return <TabItem
+      tabItem={this.props.tabItem}
+      onDelete={this.onDelete.bind(this)}
+    ></TabItem>
+  }
+
+  onDelete() {
+    const url = (
+      `/teams/${this.props.slug}` +
+      `/tab-items/${this.props.tabItem.id}`
+    );
+    console.debug('deleted this', url);
+    authDelete(url).then(() => {
+      showPopup({
+        header: 'Deleted',
+        info: 'Tab item deleted',
+        class: 'success'
+      });
+      this.props.refreshList();
+    }).catch((error) => {
+      if (error.response && error.response.status == 400) {
+        showPopup({
+          header: 'Error',
+          info: error.response.data.errors.error[0],
+          class: 'warning'
+        });
+      } else {
+        showError();
+      }
+    })
+  }
+}
+
+
+export default connect(
+  function(store) {
+    return {
+      slug: store.teamState.currentTeam.slug
+    }
+  }
+)(TabItemContainer);

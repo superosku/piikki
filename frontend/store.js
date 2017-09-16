@@ -14,34 +14,44 @@ const initialTabItems = {
 const tabItemReducer = function(state = initialTabItems, action) {
   const maxItemsFromApi = 50;
   if (action.type === 'SET_TAB_ITEM_LOADING') {
-    return {
-      loading: true,
-      tabItems: state.tabItems,
-      count: state.count,
-      page: state.page,
-      hasMore: state.hasMore
-    }
+    return Object.assign(
+      {},
+      state,
+      {loading: true}
+    );
   }
   if (action.type === 'SET_TAB_ITEM_DATA') {
-    return {
-      loading: false,
-      tabItems: action.data.data,
-      count: action.data.meta.count,
-      page: action.data.meta.page,
-      hasMore: action.data.data.length == maxItemsFromApi
-    }
+    return Object.assign(
+      {},
+      {
+        loading: false,
+        tabItems: action.data.data,
+        count: action.data.meta.count,
+        page: action.data.meta.page,
+        hasMore: action.data.data.length == maxItemsFromApi
+      },
+      {
+        page: state.page + 1
+      }
+    );
   }
   if (action.type === 'APPEND_TAB_ITEM_DATA') {
-    return {
-      loading: false,
-      tabItems: state.tabItems.concat(action.data.data).map(o => Object.assign({}, o)),
-      count: action.data.meta.count,
-      page: action.data.meta.page,
-      hasMore: action.data.data.length == maxItemsFromApi
-    }
+    return Object.assign(
+      {},
+      {
+        loading: false,
+        tabItems: state.tabItems.concat(action.data.data).map(o => Object.assign({}, o)),
+        count: action.data.meta.count,
+        hasMore: action.data.data.length == maxItemsFromApi
+      },
+      {
+        page: state.page + 1
+      }
+    );
   }
   if (action.type === 'REMOVE_TAB_ITEM_DATA') {
-    return initialTabItems;
+    console.debug('REMOVE_TAB_ITEM_DATA', initialTabItems);
+    return Object.assign({}, initialTabItems);
   }
   return state
 };

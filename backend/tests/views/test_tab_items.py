@@ -171,6 +171,105 @@ class TestTabItemsViewAuthorized:
             ]
         }
 
+    def test_searching_by_username_returns_correct_items(
+        self, client, logged_in_user
+    ):
+        team = TeamFactory(slug='mine')
+        TeamMembershipFactory(team=team, user=logged_in_user)
+        person1 = PersonFactory(team=team, name='Jaska Jokunen')
+        person2 = PersonFactory(team=team, name='Pekka Puupää')
+
+        tab_item = TabItemFactory(
+            team=team,
+            adder=logged_in_user,
+            person=person1,
+            name='Oldest',
+            added_at=datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+        TabItemFactory(
+            team=team,
+            adder=logged_in_user,
+            person=person2,
+            name='Oldest',
+            added_at=datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+
+        response = client.get(
+            url_for('api.tab_items', team_slug='mine', search='joku')
+        )
+        assert response.status_code == 200
+        expected_data = {
+            'meta': {'page': 0, 'per_page': 50, 'count': 1},
+            'data': [
+                {
+                    'adder': {
+                        'name': 'Pekka Puupää',
+                        'id': 1
+                    },
+                    'price': '2.00',
+                    'total': '2.00',
+                    'person': {
+                        'name': 'Jaska Jokunen',
+                        'id': 1
+                    },
+                    'name': 'Oldest',
+                    'added_at': tab_item.added_at.isoformat(),
+                    'id': tab_item.id,
+                    'amount': 1
+                }
+            ]
+        }
+        assert response.json == expected_data
+
+    def test_searching_by_item_name_returns_correct_items(
+        self, client, logged_in_user
+    ):
+        team = TeamFactory(slug='mine')
+        TeamMembershipFactory(team=team, user=logged_in_user)
+        person = PersonFactory(team=team, name='Jaska Jokunen')
+
+        tab_item = TabItemFactory(
+            team=team,
+            adder=logged_in_user,
+            person=person,
+            name='Beer',
+            added_at=datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+        TabItemFactory(
+            team=team,
+            adder=logged_in_user,
+            person=person,
+            name='Cider',
+            added_at=datetime.datetime.now() - datetime.timedelta(days=1)
+        )
+
+        response = client.get(
+            url_for('api.tab_items', team_slug='mine', search='beer')
+        )
+        assert response.status_code == 200
+        expected_data = {
+            'meta': {'page': 0, 'per_page': 50, 'count': 1},
+            'data': [
+                {
+                    'adder': {
+                        'name': 'Pekka Puupää',
+                        'id': 1
+                    },
+                    'price': '2.00',
+                    'total': '2.00',
+                    'person': {
+                        'name': 'Jaska Jokunen',
+                        'id': 1
+                    },
+                    'name': 'Beer',
+                    'added_at': tab_item.added_at.isoformat(),
+                    'id': tab_item.id,
+                    'amount': 1
+                }
+            ]
+        }
+        assert response.json == expected_data
+
     def test_pagination_with_invalid_page_param(
             self, client, logged_in_user
     ):
@@ -355,3 +454,75 @@ class TestTabItemsPostNonAdmin(TabItemsPostAuthorizedTestCase):
             'errors': {'tab_items': ['Only admins can add negative tabs.']}
         }
         assert TabItem.query.count() == 0
+
+
+@pytest.mark.usefixtures('request_ctx', 'database')
+class TestTabItemsDelete:
+    @pytest.fixture
+    def team(self):
+        return TeamFactory()
+
+    @pytest.fixture
+    def logged_in_user(self, team):
+        return UserFactory(memberships=[
+            TeamMembershipFactory.build(team=team, is_admin=False)
+        ])
+
+    def test_deleting_tab_item(self, logged_in_user, client, team):
+        tab_item = TabItemFactory(
+            team=team,
+            person=PersonFactory(team=team),
+            adder=logged_in_user
+        )
+        assert TabItem.query.count() == 1
+        response = client.delete(url_for(
+            'api.tab_items_delete',
+            team_slug=team.slug,
+            tab_item_id=tab_item.id
+        ))
+        assert response.status_code == 200
+        assert TabItem.query.count() == 0
+
+    def test_cant_delete_older_than_60_min_tab_item(
+        self, logged_in_user, client, team
+    ):
+        tab_item = TabItemFactory(
+            team=team,
+            person=PersonFactory(team=team),
+            adder=logged_in_user,
+            added_at=datetime.datetime.now() - datetime.timedelta(minutes=61)
+        )
+        assert TabItem.query.count() == 1
+        response = client.delete(url_for(
+            'api.tab_items_delete',
+            team_slug=team.slug,
+            tab_item_id=tab_item.id
+        ))
+        assert response.status_code == 400
+        assert TabItem.query.count() == 1
+        assert response.json == {
+            'errors': {
+                'error': ['Items older than 1 hour cant be deleted.']
+            }
+        }
+
+    def test_user_from_other_team_cant_delete(
+        self, logged_in_user, client, team
+    ):
+        other_team = TeamFactory()
+        tab_item = TabItemFactory(
+            team=other_team,
+            person=PersonFactory(team=other_team),
+            adder=UserFactory(memberships=[
+                TeamMembershipFactory.build(team=other_team)
+            ]),
+            added_at=datetime.datetime.now()
+        )
+        assert TabItem.query.count() == 1
+        response = client.delete(url_for(
+            'api.tab_items_delete',
+            team_slug=other_team.slug,
+            tab_item_id=tab_item.id
+        ))
+        assert response.status_code == 404
+        assert TabItem.query.count() == 1

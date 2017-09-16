@@ -97,6 +97,9 @@ class Person(db.Model):
         db.UniqueConstraint(id, team_id),
     )
 
+    def __repr__(self):
+        return "<Person name='{}' team='{}'>".format(self.name, self.team.name)
+
 
 class TabType(db.Model):
     id = db.Column(db.Integer, primary_key=True)

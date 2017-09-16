@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { authGet } from './../api.js';
-import store from './../store.js';
 import Spinner from './misc/spinner.jsx';
 import TabItem from './add-tab/tab-item.jsx';
 
@@ -12,18 +11,29 @@ class Log extends React.Component {
   render() {
     return <div className="container log-container padded-container">
       <h2>Tab log</h2>
-      <p className="log-count">{this.props.tabItemState.count} items.</p>
-      {this.props.tabItemState.tabItems.map(
+      <div className="input-container">
+        <input
+          required
+          type="text"
+          id="email"
+          value={this.props.search}
+          onChange={(event) => {this.props.setSearch(event.target.value)}}
+        />
+        <i className="fa fa-search" />
+      </div>
+      <p className="log-count">{this.props.count} items.</p>
+      {this.props.tabItems.map(
         tabItem => <TabItem
           key={tabItem.id}
           tabItem={tabItem}
+          refreshList={this.props.refreshList}
         ></TabItem>)
       }
       <div className="log-end">
-        {this.props.tabItemState.loading ?
+        {this.props.loading ?
           <Spinner /> :
           <div>
-            {this.props.tabItemState.hasMore &&
+            {this.props.hasMore &&
             <button
               onClick={this.props.loadMore}
               className="load-more"
@@ -40,49 +50,81 @@ class Log extends React.Component {
 class LogContainer extends React.Component {
   render() {
     return <Log
-      tabItemState={this.props.tabItemState}
       loadMore={this.loadMore.bind(this)}
+      search={this.state.search}
+      setSearch={this.setSearch.bind(this)}
+      loading={this.state.loading}
+      tabItems={this.state.tabItems}
+      count={this.state.count}
+      refreshList={this.refreshList.bind(this)}
     ></Log>
   }
 
+  constructor() {
+    super();
+    this.state = {
+      search: '',
+      page: 0,
+      tabItems: [],
+      loading: true,
+      count: 0,
+      hasMore: false
+    };
+  }
+
+  refreshList() {
+    this.setState(Object.assign(this.state, {
+      search: '',
+      page: 0,
+      tabItems: []
+    }));
+    this.loadMore(undefined, 0);
+  }
+
+  setSearch(search) {
+    this.setState(Object.assign(this.state, {
+      search: search,
+      page: 0,
+      tabItems: []
+    }));
+
+    this.loadMore(search, 0);
+  }
+
   componentDidMount() {
-    const url = (
-      `/teams/${this.props.params.slug}/tab-items`
-    );
-    store.dispatch({
-      type: 'SET_TAB_ITEM_LOADING'
-    });
-    authGet(url).then(response => {
-      store.dispatch({
-        type: 'SET_TAB_ITEM_DATA',
-        data: response.data
-      });
-    }).catch(() => {
-      showError();
-    });
+    this.loadMore();
   }
 
-  componentWillUnmount() {
-    store.dispatch({
-      type: 'REMOVE_TAB_ITEM_DATA'
-    });
-  }
+  loadMore(search=undefined, page=undefined) {
+    search = search || this.state.search;
+    page = page ||this.state.page;
 
-  loadMore() {
-    const url = (
+    // console.debug('loadMore', this.props.tabItemState.page);
+    let url = (
       `/teams/` +
       `${this.props.params.slug}/tab-items` +
-      `?page=${this.props.tabItemState.page + 1}`
+      `?page=${page}`
     );
-    store.dispatch({
-      type: 'SET_TAB_ITEM_LOADING'
-    });
-    authGet(url).then(response => {
-      store.dispatch({
-        type: 'APPEND_TAB_ITEM_DATA',
-        data: response.data
+    if (search) {
+      url += `&search=${search}`;
+    }
+
+    this.setState(Object.assign(this.state, {
+      loading: true
+    }));
+
+    authGet(url).then((searchWas => {
+      return (response => {
+        if (searchWas === this.state.search) {
+          this.setState(Object.assign(this.state, {
+            loading: false,
+            tabItems: this.state.tabItems.concat(response.data.data),
+            hasMore: response.data.data.length > 0,
+            count: response.data.meta.count
+          }));
+        }
       });
-    }).catch(() => {
+    })(search)).catch(() => {
       showError();
     });
   }

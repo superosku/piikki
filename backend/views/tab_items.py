@@ -4,7 +4,7 @@ from flask import abort, jsonify, request
 from flask_jwt import current_identity, jwt_required
 from voluptuous import Coerce, Required, Schema
 
-from backend.models import Person, TabItem, TeamMembership, db
+from backend.models import Person, TabItem, TeamMembership, db, TabType
 from backend.views.api import api
 from backend.views.base import team_view
 from backend.views.persons import _get_person_data
@@ -47,11 +47,30 @@ def tab_items(team):
     tab_items_query = (
         TabItem.query
         .filter(TabItem.team == team)
+    )
+
+    search = request.args.get('search', '')
+    if search:
+        tab_items_query = tab_items_query.filter(
+            db.or_(
+                TabItem.person_id.in_(
+                    db.session.query(Person.id).filter(Person.name.ilike(
+                        '%' + search + '%'
+                    ))
+                ),
+                TabItem.name.ilike('%' + search + '%')
+            )
+        )
+
+    amount = tab_items_query.count()
+
+    tab_items_query = (
+        tab_items_query
         .order_by(TabItem.added_at.desc())
         .limit(per_page)
         .offset(per_page * page)
     )
-    amount = TabItem.query.filter(TabItem.team == team).count()
+
     return jsonify(
         {
             'data': [
@@ -65,7 +84,6 @@ def tab_items(team):
             }
         }
     )
-    jsonify({'data': [_repr_tab_item(tab_item) for tab_item in tab_items_query], 'meta': {'count': amount, 'page': page, 'per_page': per_page}})
 
 
 tab_items_schema = Schema({
@@ -136,3 +154,24 @@ def tab_items_add(team):
             'persons': _get_person_data(team)
         }
     ), 201
+
+
+@api.route('/teams/<team_slug>/tab-items/<tab_item_id>', methods=['DELETE'])
+@jwt_required()
+@team_view
+def tab_items_delete(team, tab_item_id):
+    tab_item = TabItem.query.get(tab_item_id)
+
+    if (
+        tab_item.added_at + datetime.timedelta(hours=1) <
+        datetime.datetime.now()
+    ):
+        return jsonify({
+            'errors': {
+                'error': ['Items older than 1 hour cant be deleted.']
+            }
+        }), 400
+
+    db.session.delete(tab_item)
+    db.session.commit()
+    return jsonify({}), 200
