@@ -35,7 +35,7 @@ class Log extends React.Component {
           <div>
             {this.props.hasMore &&
             <button
-              onClick={this.props.loadMore}
+              onClick={() => {this.props.loadMore()}}
               className="load-more"
             >More...</button>
             }
@@ -57,6 +57,7 @@ class LogContainer extends React.Component {
       tabItems={this.state.tabItems}
       count={this.state.count}
       refreshList={this.refreshList.bind(this)}
+      hasMore={this.state.hasMore}
     ></Log>
   }
 
@@ -95,11 +96,10 @@ class LogContainer extends React.Component {
     this.loadMore();
   }
 
-  loadMore(search=undefined, page=undefined) {
+  loadMore(search='', page=0) {
     search = search || this.state.search;
-    page = page ||this.state.page;
+    page = page || this.state.page;
 
-    // console.debug('loadMore', this.props.tabItemState.page);
     let url = (
       `/teams/` +
       `${this.props.params.slug}/tab-items` +
@@ -120,7 +120,8 @@ class LogContainer extends React.Component {
             loading: false,
             tabItems: this.state.tabItems.concat(response.data.data),
             hasMore: response.data.data.length > 0,
-            count: response.data.meta.count
+            count: response.data.meta.count,
+            page: this.state.page + 1
           }));
         }
       });
