@@ -1,7 +1,7 @@
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var ManifestRevisionPlugin = require('manifest-revision-webpack-plugin');
+var WebpackManifestPlugin = require('webpack-yam-plugin');
 
 
 module.exports = {
@@ -11,7 +11,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: '[name].js'
+    filename: '[name]-[hash].js'
   },
   module: {
     loaders: [
@@ -56,10 +56,14 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('[name].css'),
+    new ExtractTextPlugin('[name]-[hash].css'),
     new webpack.DefinePlugin({
       API_URL: JSON.stringify(process.env.API_URL || ''),
       RAVEN_CONFIG: JSON.stringify(process.env.RAVEN_CONFIG || '')
+    }),
+    new WebpackManifestPlugin({
+      manifestPath: path.resolve(__dirname, 'build/webpack_manifest.json'),
+      outputRoot: __dirname
     })
   ]
 };

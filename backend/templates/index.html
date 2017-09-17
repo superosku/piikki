@@ -1,0 +1,22 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
+    <title>Tab manager</title>
+    <script src="https://cdn.ravenjs.com/3.17.0/raven.min.js" crossorigin="anonymous"></script>
+    <script>
+      Raven.config(
+        'https://39dc872315ad4157ab421355f9aac012@sentry.io/200017',
+        {
+          logger: 'javascript'
+        }
+      ).install()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="{{ js_path }}"></script>
+    <link href="{{ css_path }}" rel="stylesheet">
+  </body>
+</html>
