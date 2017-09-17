@@ -16,7 +16,7 @@ class TabItem extends React.Component {
           </span>
         </div>
         <div>
-          <span className="blue-thing">{this.addedAt}</span>
+          <span className="blue-thing time-thing">{this.addedAt}</span>
         </div>
       </div>
       <div className="tab-item-content">
@@ -67,7 +67,8 @@ class TabItem extends React.Component {
       </span>
     }
     return <span className="price-info">
-      {this.props.tabItem.price}€ x {this.props.tabItem.amount} = <span className="final-price">{this.props.tabItem.total}€</span>
+      <span className="final-price">{this.props.tabItem.total}€ </span>
+      ({this.props.tabItem.price}€ x {this.props.tabItem.amount})
     </span>;
   }
 }

@@ -354,6 +354,9 @@ body, html {
       .blue-thing {
         color: $lightBlue;
       }
+      .time-thing {
+        white-space: nowrap;
+      }
       i {
         padding: 0 5px 0 10px;
       }
