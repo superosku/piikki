@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var WebpackManifestPlugin = require('webpack-yam-plugin');
 
+const IS_DEV_SERVER = process.argv[1].indexOf('webpack-dev-server') >= 0;
 
 module.exports = {
   entry: {
@@ -11,7 +12,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: '[name]-[hash].js'
+    filename: `[name]${IS_DEV_SERVER ? '' : '-[hash]'}.js`
   },
   module: {
     loaders: [
@@ -56,7 +57,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new ExtractTextPlugin('[name]-[hash].css'),
+    new ExtractTextPlugin(`[name]${IS_DEV_SERVER ? '' : '-[hash]'}.css`),
     new webpack.DefinePlugin({
       API_URL: JSON.stringify(process.env.API_URL || ''),
       RAVEN_CONFIG: JSON.stringify(process.env.RAVEN_CONFIG || '')
