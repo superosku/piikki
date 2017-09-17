@@ -19,6 +19,7 @@ dependencies:
 
 test:
   pre:
+    - flask initdb
     - flask threaded:
        background: true
     - ./node_modules/webpack-dev-server/bin/webpack-dev-server.js:
