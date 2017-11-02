@@ -58,6 +58,7 @@ class AddTab extends React.Component {
             <input
               className="other-input"
               type="number"
+              step="0.01"
               max="9999"
               min="-9999"
               onChange={this.props.setOtherAmount}
