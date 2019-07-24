@@ -6,7 +6,7 @@ import voluptuous
 from flask import Flask
 from flask_cors import CORS
 from flask_jwt import JWT
-# from flask_webpack import Webpack
+from flask_sslify import SSLify
 
 from backend.models import User
 from backend.views import *
@@ -44,9 +44,7 @@ def create_app(
     app.jwt = jwt
 
     CORS(app)
-
-    # webpack = Webpack()
-    # webpack.init_app(app)
+    SSLify(app)
 
     from backend.models import db
     db.init_app(app)
