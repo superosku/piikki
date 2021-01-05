@@ -103,6 +103,7 @@ class TestUsersInviteAuthorized:
 
     def test_returns_correct_data(self, client, logged_in_user, data):
         team = TeamFactory(slug='mine')
+        UserFactory(email='new@user.fi')
         TeamMembershipFactory(team=team, user=logged_in_user, is_admin=True)
         response = client.post(
             url_for('api.users_invite', team_slug='mine'),
@@ -115,7 +116,7 @@ class TestUsersInviteAuthorized:
             {'is_admin': False, 'email': 'new@user.fi', 'id': 2}
         ]
 
-    def test_creates_invite_type_user_when_no_user_exists(
+    def test_returns_error_when_no_user_exists(
         self, client, logged_in_user, data
     ):
         team = TeamFactory(slug='mine')
@@ -125,13 +126,8 @@ class TestUsersInviteAuthorized:
             data=json.dumps(data),
             content_type='application/json'
         )
-        assert response.status_code == 201
-        created_user = User.query.filter_by(email='new@user.fi').one()
-        assert created_user.is_invite is True
-        assert created_user.first_name == ''
-        assert created_user.last_name == ''
-        membership = TeamMembership.query.filter_by(user=created_user).one()
-        assert membership.is_admin is False
+        assert response.status_code == 400
+        assert User.query.filter_by(email='new@user.fi').count() == 0
 
     def test_invites_existing_user(
         self, client, logged_in_user, data
@@ -170,3 +166,40 @@ class TestUsersInviteAuthorized:
         assert response.json == {
             'errors': {'email': ['User is already part of the team.']}
         }
+
+
+@pytest.mark.usefixtures('request_ctx', 'database')
+class TestDeleteUserMembership:
+    @pytest.fixture
+    def logged_in_user(self):
+        return UserFactory(email='owner@email.fi')
+
+    def test_returns_404_for_team_not_part_of(self, client, logged_in_user):
+        team = TeamFactory(slug='not-mine')
+        user = UserFactory()
+        TeamMembershipFactory(user=user, team=team)
+        response = client.delete(url_for(
+            'api.remove_user', team_slug='not-mine', user_id=user.id
+        ))
+        assert response.status_code == 404
+
+    def test_deletes_membership(self, client, logged_in_user):
+        team = TeamFactory(slug='mine')
+        user = UserFactory()
+        TeamMembershipFactory(user=user, team=team)
+        TeamMembershipFactory(user=logged_in_user, team=team)
+        response = client.delete(url_for(
+            'api.remove_user', team_slug='mine', user_id=user.id
+        ))
+        assert response.status_code == 200
+        assert TeamMembership.query.filter_by(user=user).count() == 0
+
+    def test_cant_delete_self(self, client, logged_in_user):
+        team = TeamFactory(slug='mine')
+        TeamMembershipFactory(user=logged_in_user, team=team)
+        response = client.delete(url_for(
+            'api.remove_user', team_slug='mine', user_id=logged_in_user.id
+        ))
+        assert response.status_code == 400
+        assert TeamMembership.query.filter_by(user=logged_in_user).count() == 1
+

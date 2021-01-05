@@ -1,7 +1,7 @@
 import datetime
 
 from flask import abort, jsonify, request
-from flask_jwt import jwt_required
+from flask_jwt import current_identity, jwt_required
 from voluptuous import Boolean, Email, Required, Schema
 
 from backend.models import TeamMembership, User, db
@@ -32,6 +32,25 @@ def users(team):
     return _get_users_response(team)
 
 
+@api.route('/teams/<team_slug>/users/<int:user_id>', methods=['DELETE'])
+@jwt_required()
+@team_view
+def remove_user(team, user_id):
+    membership = TeamMembership.query.filter_by(
+        user_id=user_id,
+        team=team
+    ).one()
+    if user_id == current_identity.id:
+        return jsonify({
+            'errors': {
+                'user_id': ['Cant remove self.']
+            }
+        }), 400
+    db.session.delete(membership)
+    db.session.commit()
+    return jsonify({}, 200)
+
+
 user_invite_schema = Schema({
     Required('email'): Email(),
     Required('is_admin'): Boolean()
@@ -51,14 +70,11 @@ def users_invite(team):
     user = User.query.filter_by(email=data['email']).first()
 
     if not user:
-        user = User(
-            email=data['email'].lower(),
-            is_invite=True,
-            first_name='',
-            last_name='',
-            registered_at=datetime.datetime.now()
-        )
-        db.session.add(user)
+        return jsonify({
+            'errors': {
+                'email': ['User must be registered before adding to the team.']
+            }
+        }), 400
     elif TeamMembership.query.filter_by(user=user, team=team).count() > 0:
         return jsonify({
             'errors': {
