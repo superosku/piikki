@@ -17,7 +17,7 @@ inflection==0.3.1
 itsdangerous==0.24
 passlib==1.7.1
 psycopg2-binary==2.8.6
-py==1.4.33
+py==1.11.0
 pytest==3.0.7
 python-dateutil==2.6.0
 six==1.10.0
