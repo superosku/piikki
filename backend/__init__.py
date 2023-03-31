@@ -23,7 +23,15 @@ def authenticate(username, password):
 
 def identity(payload):
     user_id = payload['identity']
-    return User.query.get(user_id)
+    try:
+        return User.query.get(user_id)
+    except sqlalchemy.exc.OperationalError:
+        # Dirty hack:
+        # https://community.fly.io/t/psycopg2-operationalerror-server-closed-the-connection-unexpectedly/9683
+        db.session.rollback()
+        time.sleep(1)
+        db.session.begin()
+        return User.query.get(user_id)
 
 
 def create_app(
