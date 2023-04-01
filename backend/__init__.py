@@ -22,16 +22,23 @@ def authenticate(username, password):
 
 
 def identity(payload):
+    print("Get user identity")
     user_id = payload['identity']
-    try:
-        return User.query.get(user_id)
-    except sqlalchemy.exc.OperationalError:
-        # Dirty hack:
-        # https://community.fly.io/t/psycopg2-operationalerror-server-closed-the-connection-unexpectedly/9683
-        db.session.rollback()
-        time.sleep(1)
-        db.session.begin()
-        return User.query.get(user_id)
+    retry_count = 0
+    while True:
+        try:
+            return User.query.get(user_id)
+        except sqlalchemy.exc.OperationalError:
+            # Dirty hack:
+            # https://community.fly.io/t/psycopg2-operationalerror-server-closed-the-connection-unexpectedly/9683
+            retry_count += 1
+            print("Retrying...", retry_count)
+            if retry_count > 30:
+                raise
+            db.session.rollback()
+            time.sleep(1)
+            db.session.begin()
+            continue
 
 
 def create_app(
